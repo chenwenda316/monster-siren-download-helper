@@ -1,0 +1,20 @@
+{
+  "name": "arkmusic-download-helper",
+  "version": "1.0.0",
+  "description": "a tool ",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "for_each",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^31.4.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.4",
+    "node-id3": "^0.2.6"
+  }
+}
