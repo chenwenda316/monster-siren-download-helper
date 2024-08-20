@@ -1,7 +1,7 @@
 /*
  * @Author: chenwenda316
  * @Date: 2024-08-15 23:43:23
- * @LastEditTime: 2024-08-19 13:47:47
+ * @LastEditTime: 2024-08-20 11:06:15
  * @FilePath: \my-electron-app\renderer.js
  */
 console.log("hello!");

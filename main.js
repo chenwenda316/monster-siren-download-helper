@@ -1,7 +1,7 @@
 /*
  * @Author: chenwenda316
  * @Date: 2024-08-15 23:29:10
- * @LastEditTime: 2024-08-19 14:45:48
+ * @LastEditTime: 2024-08-20 11:06:32
  * @FilePath: \my-electron-app\main.js
  */
 // Modules to control application life and create native browser window
@@ -470,11 +470,6 @@ app.on('window-all-closed', () => {
 })
 
 app.on('will-quit', () => {
-    // 注销快捷键
-    // globalShortcut.unregister('CommandOrControl+X')
-
-    // 注销所有快捷键
-    globalShortcut.unregisterAll()
 })
 
 // 在当前文件中你可以引入所有的主进程代码

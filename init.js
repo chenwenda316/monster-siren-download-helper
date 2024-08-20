@@ -1,7 +1,7 @@
 /*
  * @Author: chenwenda316
  * @Date: 2024-08-16 00:14:47
- * @LastEditTime: 2024-08-18 22:58:18
+ * @LastEditTime: 2024-08-20 11:05:40
  * @FilePath: \my-electron-app\init.js
  */
 console.log("init");
@@ -64,7 +64,7 @@ function init_songs() {
                 tr += `<td id="song${parseInt(element.cid)}">${element.name}</td>`;
                 tr += insert_td(window.albums[element.albumCid].name || element.albumCid);
                 tr += `<td class="text-nowrap"><button type="button" class="btn btn-secondary btn-sm text-nowrap" onclick="info(${element.cid})">详情</button>
-                    <button type="button" class="btn btn-primary btn-sm text-nowrap" onclick="downloadAlbum(${element.albumCid})">下载专辑</button>
+                    <button type="button" class="btn btn-primary btn-sm text-nowrap" onclick="downloadAlbum('${element.albumCid}')">下载专辑</button>
                     <button type="button" class="btn btn-primary btn-sm text-nowrap" onclick="download(${element.cid})">下载</button>
                     </td>`;
                 tr += "</tr>";
