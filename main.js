@@ -219,7 +219,7 @@ async function download_song(e, value) {
                 }
                 const success = NodeID3.update(tags, data)
 
-                fs.writeFile(path.join(currentMusicDirectory, `[${album}] ${name}.mp3`), success, (err) => {
+                fs.writeFile(path.join(currentMusicDirectory, `[${album}] ${name.replace(/:/g,"：")}.mp3`), success, (err) => {
                     if (err) {
                         console.error('Error saving file:', err);
                     } else {
