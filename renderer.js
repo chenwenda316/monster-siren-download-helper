@@ -1,7 +1,7 @@
 /*
  * @Author: chenwenda316
  * @Date: 2024-08-15 23:43:23
- * @LastEditTime: 2024-08-20 11:06:15
+ * @LastEditTime: 2024-08-25 20:26:38
  * @FilePath: \my-electron-app\renderer.js
  */
 console.log("hello!");
@@ -84,7 +84,7 @@ function downloadNext() {
 }
 
 
-function downloadAll() {
+function downloadAll(n) {
 
     if (window.isdownloading) {
         document.getElementById("d_warn").click();
@@ -101,7 +101,7 @@ function downloadAll() {
             return JSON.parse(data);
         })
         .then(data => {
-            window.downloadList = data.data.list;
+            window.downloadList = data.data.list.slice(n);
             window.currentDownload = 0;
             downloadNext();
         })

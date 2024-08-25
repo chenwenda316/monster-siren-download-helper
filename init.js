@@ -1,7 +1,7 @@
 /*
  * @Author: chenwenda316
  * @Date: 2024-08-16 00:14:47
- * @LastEditTime: 2024-08-20 11:05:40
+ * @LastEditTime: 2024-08-25 20:25:35
  * @FilePath: \my-electron-app\init.js
  */
 console.log("init");
@@ -54,7 +54,7 @@ function init_songs() {
             // console.log(data.data.list);
             window.songs = {};
             let tbody = "";
-            data.data.list.forEach(element => {
+            data.data.list.forEach((element,i) => {
                 window.songs[parseInt(element.cid)] = element;
 
                 let tr = `<tr>`;
@@ -64,7 +64,8 @@ function init_songs() {
                 tr += `<td id="song${parseInt(element.cid)}">${element.name}</td>`;
                 tr += insert_td(window.albums[element.albumCid].name || element.albumCid);
                 tr += `<td class="text-nowrap"><button type="button" class="btn btn-secondary btn-sm text-nowrap" onclick="info(${element.cid})">详情</button>
-                    <button type="button" class="btn btn-primary btn-sm text-nowrap" onclick="downloadAlbum('${element.albumCid}')">下载专辑</button>
+                    <button type="button" class="btn btn-primary btn-sm text-nowrap" onclick="downloadAll('${i}')">从此向下</button>
+                    <button type="button" class="btn btn-primary btn-sm text-nowrap" onclick="downloadAlbum('${element.albumCid}')">下专辑</button>
                     <button type="button" class="btn btn-primary btn-sm text-nowrap" onclick="download(${element.cid})">下载</button>
                     </td>`;
                 tr += "</tr>";

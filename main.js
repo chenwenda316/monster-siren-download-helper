@@ -1,7 +1,7 @@
 /*
  * @Author: chenwenda316
  * @Date: 2024-08-15 23:29:10
- * @LastEditTime: 2024-08-20 11:06:32
+ * @LastEditTime: 2024-08-25 20:27:54
  * @FilePath: \my-electron-app\main.js
  */
 // Modules to control application life and create native browser window
@@ -326,7 +326,7 @@ async function download_song(e, value) {
                         },
                         responseType: 'arraybuffer',
                         headers: {
-                            'Range': `bytes=${start}-${end}`
+                            'Range': `bytes=${start}-${(i==mutiDownloadArgs.chunks - 1?'':end)}`
                         }
                     }
                 ).then(response => {
