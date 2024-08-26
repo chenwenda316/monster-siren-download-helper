@@ -1,7 +1,7 @@
 /*
  * @Author: chenwenda316
  * @Date: 2024-08-15 23:29:10
- * @LastEditTime: 2024-08-25 20:27:54
+ * @LastEditTime: 2024-08-25 20:27:55
  * @FilePath: \my-electron-app\main.js
  */
 // Modules to control application life and create native browser window
