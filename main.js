@@ -115,6 +115,7 @@ async function download_song(e, value) {
     await axios.get(`https://monster-siren.hypergryph.com/api/album/${albumCid}/data`)
         .then(response => {
             album = response.data.data.name;
+            album = album.trim();
             coverUrl = response.data.data.coverUrl;
         })
         .catch(error => {
