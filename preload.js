@@ -12,8 +12,10 @@ const { contextBridge, ipcRenderer } = require('electron/renderer')
 contextBridge.exposeInMainWorld('electronAPI', {
   onUpdateCounter: (callback) => ipcRenderer.on('progress', (_event, value) => callback(value)),
   oksong: (callback) => ipcRenderer.on('oksong', (_event, value) => callback(value)),
+  damnsong: (callback) => ipcRenderer.on('damnsong', (_event, value) => callback(value)),
   download_song: (data) => ipcRenderer.send('download-song', data),
   openfolder: (cid) => ipcRenderer.send('openfolder', cid),
+  selectfolder: (cid) => ipcRenderer.send('selectfolder', cid),
 })
 
 window.addEventListener('DOMContentLoaded', () => {

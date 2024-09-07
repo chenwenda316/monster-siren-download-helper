@@ -5,7 +5,7 @@
  * @FilePath: \my-electron-app\main.js
  */
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain, Menu } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, dialog } = require('electron')
 const axios = require('axios');
 const os = require('os');
 const path = require('node:path')
@@ -35,26 +35,81 @@ if (platform === 'win32') {
     musicDirectory = __dirname;
 }
 
-musicDirectory = path.join(musicDirectory, "monster-siren");
+baseDirectory = path.join(musicDirectory, "monster-siren");
 
-fs.mkdir(musicDirectory, { recursive: true }, (err) => {
-    if (err) throw err;
-    console.log('sucessful mkdir.');
+//打开音乐文件夹命令字符串定义
+var command = "";
+
+//读取自定义文件夹
+fs.readFile(path.join(baseDirectory, "tmp", "path.txt"), "utf8", (err, data) => {
+    if (err) {
+        console.error('Error reading file:', err);
+        return;
+    }
+    console.log('File content:', data);
+    musicDirectory = data || baseDirectory;
+    // 初始化文件夹
+    fs.mkdir(musicDirectory, { recursive: true }, (err) => {
+        if (err) throw err;
+        console.log('sucessful mkdir.');
+    });
+    fs.mkdir(path.join(musicDirectory, "tmp"), { recursive: true }, (err) => {
+        if (err) throw err;
+        console.log('sucessful mkdir.');
+    });
+    //打开音乐文件夹
+    if (os.platform() === 'win32') {
+        command = `explorer ${musicDirectory}`;
+    } else if (os.platform() === 'darwin') {
+        command = `open ${musicDirectory}`;
+    } else {
+        command = `xdg-open ${musicDirectory}`;
+    }
+    console.log('File content:', data || baseDirectory);
 });
 
-fs.mkdir(path.join(musicDirectory, "tmp"), { recursive: true }, (err) => {
-    if (err) throw err;
-    console.log('sucessful mkdir.');
-});
 
-let command;
-if (os.platform() === 'win32') {
-    command = `explorer ${musicDirectory}`;
-} else if (os.platform() === 'darwin') {
-    command = `open ${musicDirectory}`;
-} else {
-    command = `xdg-open ${musicDirectory}`;
+
+//更换音乐文件夹
+function seletFolder() {
+    const folderPath = dialog.showOpenDialogSync({
+        properties: ['openDirectory']
+    });
+
+    if (folderPath) {
+        console.log('Selected folder:', folderPath);
+        fs.writeFile(path.join(baseDirectory, "tmp", "path.txt"), folderPath[0], (err) => {
+            if (err) {
+                console.error('Error writing file:', err);
+                return;
+            }
+            console.log('File written successfully');
+        });
+    } else {
+        console.log('No folder selected.');
+    }
 }
+//初始化文件夹
+fs.mkdir(baseDirectory, { recursive: true }, (err) => {
+    if (err) throw err;
+    console.log('sucessful mkdir.');
+});
+
+fs.mkdir(path.join(baseDirectory, "tmp"), { recursive: true }, (err) => {
+    if (err) throw err;
+    console.log('sucessful mkdir.');
+});
+
+
+
+//读取已下载列表
+var downloaded = {};
+fs.open('example.txt', 'a', (err, fd) => {
+    if (err) {
+        console.error('Error opening file:', err);
+        return;
+    }
+});
 
 
 
@@ -79,7 +134,7 @@ const createWindow = () => {
     // 加载 index.html
     mainWindow.loadFile('index.html')
     // 打开开发工具
-    // mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
 }
 
 
@@ -102,6 +157,7 @@ async function download_song(e, value) {
     await axios.get("https://monster-siren.hypergryph.com/api/song/" + d)
         .then(response => {
             name = response.data.data.name;
+            name = album.trim().replace(/\.$/, '').replace(/:/g, "：");
             url = response.data.data.sourceUrl;
             lrcurl = response.data.data.lyricUrl;
             albumCid = response.data.data.albumCid;
@@ -115,7 +171,7 @@ async function download_song(e, value) {
     await axios.get(`https://monster-siren.hypergryph.com/api/album/${albumCid}/data`)
         .then(response => {
             album = response.data.data.name;
-            album = album.trim();
+            album = album.trim().replace(/\.$/, '');
             coverUrl = response.data.data.coverUrl;
         })
         .catch(error => {
@@ -220,7 +276,7 @@ async function download_song(e, value) {
                 }
                 const success = NodeID3.update(tags, data)
 
-                fs.writeFile(path.join(currentMusicDirectory, `[${album}] ${name.replace(/:/g,"：")}.mp3`), success, (err) => {
+                fs.writeFile(path.join(currentMusicDirectory, `[${album}] ${name}.mp3`), success, (err) => {
                     if (err) {
                         console.error('Error saving file:', err);
                     } else {
@@ -327,7 +383,7 @@ async function download_song(e, value) {
                         },
                         responseType: 'arraybuffer',
                         headers: {
-                            'Range': `bytes=${start}-${(i==mutiDownloadArgs.chunks - 1?'':end)}`
+                            'Range': `bytes=${start}-${(i == mutiDownloadArgs.chunks - 1 ? '' : end)}`
                         }
                     }
                 ).then(response => {
@@ -336,7 +392,8 @@ async function download_song(e, value) {
                     mutiDownloadArgs.working--;
                     downloadChunkHolder();
                 }).catch(error => {
-                    console.error('下载部分时出错:', error);
+                    console.log("network,error:", error);
+                    webContents.send("damnsong", { id: d });
                 });
                 i++;
             }
@@ -446,6 +503,9 @@ function openfolder() {
     exec(command)
 }
 
+function selectfolder() {
+    seletFolder();
+}
 // 这段程序将会在 Electron 结束初始化
 // 和创建浏览器窗口的时候调用
 // 部分 API 在 ready 事件触发后才能使用。
@@ -453,9 +513,9 @@ function openfolder() {
 app.whenReady().then(() => {
     ipcMain.on('download-song', download_song)
     ipcMain.on('openfolder', openfolder)
+    ipcMain.on('selectfolder', selectfolder)
     createWindow()
     Menu.setApplicationMenu(Menu.buildFromTemplate([]));
-
     app.on('activate', () => {
         // 在 macOS 系统内, 如果没有已开启的应用窗口
         // 点击托盘图标时通常会重新创建一个新窗口

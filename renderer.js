@@ -30,6 +30,20 @@ window.electronAPI.oksong((value) => {
     document.getElementById(`song${value.id}`).classList.add('bg-success-subtle');
 })
 
+window.electronAPI.damnsong((value) => {
+    //I find that it is very hard to figure out how to resume from
+    //a network error, the following code is untest, so I dorp them
+    //and I use downloaded list to help user to due with wetwork error.
+    return;
+    console.log("damn");
+    // console.log(value, document.getElementById(`song${value.id}`));
+    if (parseInt(window.downloadList[window.currentDownload].cid==value.id)){
+        window.currentDownload--;
+        window.isdownloading = false;
+        downloadNext()
+    }
+})
+
 function download(id) {
     if (window.isdownloading) {
         document.getElementById("d_warn").click();
@@ -159,6 +173,9 @@ function openfolder() {
     window.electronAPI.openfolder();
 }
 
+function selectfolder() {
+    window.electronAPI.selectfolder();
+}
 let currentIndex = -1;
 let findParagraphs = []; // 存储所有匹配项的索引
 
